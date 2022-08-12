@@ -1,9 +1,25 @@
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class RegisterPage extends StatelessWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+import '../models/superheroe_model.dart';
+import '../services/counter_services.dart';
+import '../services/superhero_services.dart';
+
+
+class RegistePage extends StatefulWidget {
+  const RegistePage({Key? key}) : super(key: key);
+
+  @override
+  State<RegistePage> createState() => _RegistePageState();
+}
+
+class _RegistePageState extends State<RegistePage> {
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    SuperheroService().closeStream();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,17 +34,31 @@ class RegisterPage extends StatelessWidget {
             MaterialButton(
               color: Colors.pinkAccent,
               child: Text("Agregar personaje"),
-                onPressed: (){}
+              onPressed: () {
+                SuperheroModel superhero = SuperheroModel(
+                  name: "Flash",
+                  experience: 200,
+                  skills: [
+                    "Supervelocidad",
+                    "Vuelo",
+                  ],
+                );
+                SuperheroService().addSuperhero(superhero);
+              },
             ),
             MaterialButton(
-                color: Colors.purpleAccent,
-                child: Text("Actualizar experiencia"),
-                onPressed: (){}
+              color: Colors.greenAccent,
+              child: Text("Actualizar experiencia"),
+              onPressed: () {
+                SuperheroService().updateExperience(1000);
+              },
             ),
             MaterialButton(
-                color: Colors.greenAccent,
-                child: Text("Agregar habilidad"),
-                onPressed: (){}
+              color: Colors.blue,
+              child: Text("Agregar habilidad"),
+              onPressed: () {
+                SuperheroService().addSkill("Millonario");
+              },
             ),
           ],
         ),
