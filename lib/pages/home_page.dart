@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_codigo5_state/cubit/superhero/superhero_cubit.dart';
 import 'package:flutter_codigo5_state/models/superhero_model.dart';
 import 'package:flutter_codigo5_state/pages/register_page.dart';
-import 'package:flutter_codigo5_state/providers/counter_provider.dart';
-import 'package:flutter_codigo5_state/providers/superhero_provider.dart';
+
 import 'package:provider/provider.dart';
 
 class HomePage extends StatelessWidget {
@@ -10,9 +11,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CounterProvider counterProvider = Provider.of<CounterProvider>(context);
-    SuperheroProvider superheroProvider =
-    Provider.of<SuperheroProvider>(context);
+
 
     return Scaffold(
       floatingActionButton: FloatingActionButton(
@@ -29,7 +28,7 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              counterProvider.addCounter();
+             // counterProvider.addCounter();
             },
             icon: Icon(Icons.add),
           ),
@@ -37,9 +36,32 @@ class HomePage extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: superheroProvider.superhero == null
-            ? Text("No hay registro")
-            : InfoSuperheroWidget(superheroModel: superheroProvider.superhero!),
+        child: BlocBuilder<SuperheroCubit, SuperheroState>(
+          builder: (BuildContext context, SuperheroState state){
+            print(state);
+            switch(state.runtimeType)
+            {
+              case SuperheroInit:
+                SuperheroInit superheroInit = state as SuperheroInit;
+                print(superheroInit.isCreatedSuperhero);
+                return Center(
+                    child: Text("No hay nada registrado")
+                );
+
+              case SuperheroCreated:
+                SuperheroCreated superheroCreated = state as SuperheroCreated;
+                print(superheroCreated.isCreatedSuperhero);
+                print(superheroCreated.superheroModel.skills);
+                return InfoSuperheroWidget(superheroModel: superheroCreated.superheroModel);
+
+              default:
+                return Center(
+                    child: CircularProgressIndicator());
+            }
+
+          },
+        ),
+
       ),
     );
   }
